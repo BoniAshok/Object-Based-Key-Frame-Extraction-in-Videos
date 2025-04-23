@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Video Summary Results</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .container {
+            background-color: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+        }
+        .summary-container {
+            margin-bottom: 30px;
+        }
+        video {
+            width: 100%;
+            max-height: 500px;
+            border-radius: 4px;
+            background-color: #000;
+        }
+        .keyframes-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .keyframe {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            overflow: hidden;
+            background-color: #fff;
+        }
+        .keyframe img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .keyframe-caption {
+            padding: 8px;
+            background-color: #eee;
+            text-align: center;
+            font-size: 14px;
+        }
+        .back-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+            display: inline-block;
+            text-decoration: none;
+        }
+        .back-button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Video Summary Results</h1>
+        {% if summary_file %}
+        <div class="summary-container">
+            <h2>Summary Video</h2>
+            <video controls>
+                <source src="{{ url_for('static', filename='processed/' + summary_file) }}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <p><a href="{{ url_for('static', filename='processed/' + summary_file) }}" download>Download summary video</a></p>
+        </div>
+        {% else %}
+        <div class="summary-container">
+            <h2>No Summary Video Generated</h2>
+            <p>Not enough keyframes were detected to create a summary video.</p>
+        </div>
+        {% endif %}
+        <h2>Selected Keyframes ({{ keyframe_paths|length }})</h2>
+        {% if keyframe_paths %}
+        <div class="keyframes-container">
+            {% for path in keyframe_paths %}
+            <div class="keyframe">
+                <img src="{{ url_for('static', filename='processed/' + path) }}" alt="Keyframe {{ loop.index }}">
+                <div class="keyframe-caption">Keyframe {{ loop.index }}</div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p>No keyframes were detected in the video.</p>
+        {% endif %}
+        <a href="{{ url_for('index') }}" class="back-button">Process Another Video</a>
+    </div>
+</body>
+</html>
